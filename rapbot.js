@@ -80,7 +80,7 @@ randomWordPromise.done(function(word) {
               "There's nobody like me 'cause I'm the greatest ",
               "You hear my freestyle and you drop your ",
               "My flow and my style both blow away the ",
-              "My posse's got my back and my homies got my ",
+              "My posse's got my back and my " + sistasHomies() + " got my ",
               "Sweeter than molasses, and stronger than " + a,
               "Try to step to me and I'mma wreck your ",
               "Wherever I go, people give me some "
@@ -130,7 +130,7 @@ app.get('/' , function(req, res){
     //console.log(cypher);
     //console.log('*drops the mic*');
     cypher += "<br>*drops the mic*";
-    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css"></style></head><body style="font-family:sans-serif;width:600px;"><h1>Freestyle 80s Battle Rap Generator</h1><p>'+cypher+'</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
+    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">a {color: rgb(35, 40, 104); text-decoration:none;}</style></head><body style="font-family:sans-serif;width:600px;"><h1>Freestyle 80s Battle Rap Generator</h1><p>'+cypher+'</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
 
   });
 
@@ -154,6 +154,10 @@ function ladiesFellas() {
 
 function womanMan() {
   return (Math.random()<0.5) ? "woman" : "man";
+}
+
+function sistasHomies() {
+  return (Math.random()<0.5) ? "sistas" : "homies";
 }
 
 function w(word) {
