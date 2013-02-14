@@ -127,8 +127,8 @@ app.get('/' , function(req, res){
   }
 
   _.when(stuffToDo).done( function() {
-    console.log(cypher);
-    console.log('*drops the mic*');
+    //console.log(cypher);
+    //console.log('*drops the mic*');
     cypher += "<br>*drops the mic*";
     res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css"></style></head><body style="font-family:sans-serif;width:600px;"><h1>Freestyle 80s Battle Rap Generator</h1><p>'+cypher+'</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
 
