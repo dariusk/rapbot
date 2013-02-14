@@ -50,9 +50,11 @@ randomWordPromise.done(function(word) {
           var a = article(word.id) + " ";
           var opens = [
             "I'm the illest MC to ever rock the ",
-            "When I'm on the mic you realize you're just " + a,
+            "When I'm on the mic you realize you're " + a,
             "My rhymes bring the power like a raging ",
-            "If you can't handle this then you're nothing but " + a
+            "If you can't handle this then you're nothing but " + a,
+            "When I come to a battle I'm strapped with " + a,
+            "When you battle me it's like you battle " + a
             ];
         var first = opens[Math.floor(Math.random()*opens.length)] + w(word.id);
         var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random()*word.get("relatedWords")[0].words.length)];
@@ -66,7 +68,8 @@ randomWordPromise.done(function(word) {
               "You can try and battle me, but you're too ",
               "I make the MCs in the place wish that they were ",
               "My rhymes blow your mind and you think it's ",
-              "My sweet-ass rhymes make your " + womanMan() + " feel "
+              "My sweet-ass rhymes make your " + womanMan() + " feel ",
+              "Now I'm gonna tell you why you ain't ",
             ];
             result = pre[Math.floor(Math.random()*pre.length)] + w(word2);
           }
