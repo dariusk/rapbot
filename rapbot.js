@@ -54,7 +54,7 @@ randomWordPromise.done(function(word) {
             "My rhymes bring the power like a raging ",
             "If you can't handle this then you're nothing but " + a
             ];
-        var first = opens[Math.floor(Math.random()*opens.length)] + word.id;
+        var first = opens[Math.floor(Math.random()*opens.length)] + w(word.id);
         var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random()*word.get("relatedWords")[0].words.length)];
         var posPromise = getPartOfSpeech(word2);
         ( function(first) {
@@ -66,9 +66,9 @@ randomWordPromise.done(function(word) {
               "You can try and battle me, but you're too ",
               "I make the MCs in the place wish that they were ",
               "My rhymes blow your mind and you think it's ",
-              "My sweet-ass rhymes make your woman feel "
+              "My sweet-ass rhymes make your " + womanMan() + " feel "
             ];
-            result = pre[Math.floor(Math.random()*pre.length)] + word2;
+            result = pre[Math.floor(Math.random()*pre.length)] + w(word2);
           }
           else if (pos === 'noun' || pos === 'proper-noun') {
             var a = article(word.id) + " ";
@@ -82,13 +82,13 @@ randomWordPromise.done(function(word) {
               "Try to step to me and I'mma wreck your ",
               "Wherever I go, people give me some "
             ];
-            result = pre[Math.floor(Math.random()*pre.length)] + I.singularize(word2);
+            result = pre[Math.floor(Math.random()*pre.length)] + w(I.singularize(word2));
            }
            else if (pos === 'verb-transitive') {
-             result = "My rhyme profile makes the ladies " + word2;
+             result = "My rhyme profile makes the " + ladiesFellas() + " " + w(word2);
            }
            else if (pos === 'interjection') {
-             result = "*skratch solo* ... (" + word2[0] + "-" + word2[0] + "-" + word2 + "!)";
+             result = "*skratch solo* ... (" + word2[0] + "-" + word2[0] + "-" + w(word2) + "!)";
            }
            else {
              result = pos;
@@ -145,8 +145,17 @@ function getPartOfSpeech(wordId) {
   return deferred.promise();
 }
 
+function ladiesFellas() {
+  return (Math.random()<0.5) ? "ladies" : "fellas";
+}
 
+function womanMan() {
+  return (Math.random()<0.5) ? "woman" : "man";
+}
 
+function w(word) {
+  return "<a href='http://www.wordnik.com/words/"+word+"'>"+word+"</a>";
+}
 
 
 

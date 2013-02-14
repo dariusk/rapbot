@@ -1,7 +1,7 @@
 {
   "name": "rapbot",
   "description": "You like bad 80's freestyle battle rapping? Let's automate that shit.",
-  "version": "0.1.0",
+  "version": "0.1.0-1",
   "homepage": "https://github.com/dariusk/rapbot",
   "author": {
     "name": "Darius Kazemi",
@@ -25,9 +25,14 @@
     "wordnik-bb": ">=0.1.0",
     "inflection": "1.2.5",
     "express": "3.0.x",
-    "underscore.deferred": "0.4.x"
+    "underscore.deferred": "0.4.x",
+    "request": "2.12.0"
   },
   "engines": {
     "node": ">=0.8.0"
+  },
+  "subdomain": "rapbot",
+  "scripts": {
+    "start": "rapbot.js"
   }
 }
