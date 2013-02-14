@@ -2,7 +2,7 @@ var APIKEY = require('./config.js').key;
 var _ = require('underscore.deferred');
 var I = require('inflection');
 var request = require('request');
-var article = require('./indefinite');
+var article = require('./lib/indefinite');
 var Wordnik = require('wordnik-bb').init(APIKEY);
 
 var express = require('express'),
