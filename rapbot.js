@@ -47,8 +47,8 @@ function getCoupletPromise() {
     _.when(word.getRelatedWords())
       .then(function () {
       if (word.get("relatedWords").length > 0) {
-//        var wordPos = word.get("definitions")[0].partOfSpeech;
-        var first = getLine(word.id, 'noun');
+        var wordPos = word.get("definitions")[0].partOfSpeech;
+        var first = getLine(word.id, wordPos);
         if (first === "") {
           coupletDeferred.resolve(result);
         }
