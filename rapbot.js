@@ -44,69 +44,31 @@ request({
 randomWordPromise.done(function(word) {
   //console.log("The model for our random word: ", word);
   // We could also get more info about the random word, in this case, relatedWords that rhyme:
-   word.getRelatedWords()
-     .then( function() {
-        if (word.get("relatedWords").length > 0) {
-          var a = article(word.id) + " ";
-          var opens = [
-            "I'm the illest MC to ever rock the ",
-            "When I'm on the mic you realize you're " + a,
-            "My rhymes bring the power like a raging ",
-            "If you can't handle this then you're nothing but " + a,
-            "When I come to a battle I'm strapped with " + a,
-            "When you battle me it's like you battle " + a
-            ];
-        var first = opens[Math.floor(Math.random()*opens.length)] + w(word.id);
-        var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random()*word.get("relatedWords")[0].words.length)];
-        var posPromise = getPartOfSpeech(word2);
-        ( function(first) {
-        
-        posPromise.done(function(pos) {
-          var result = "oops!";
-          if (pos === 'adjective') {
-            var pre = [
-              "You can try and battle me, but you're too ",
-              "I make the MCs in the place wish that they were ",
-              "My rhymes blow your mind and you think it's ",
-              "My sweet-ass rhymes make your " + womanMan() + " feel ",
-              "Now I'm gonna tell you why you ain't ",
-            ];
-            result = pre[Math.floor(Math.random()*pre.length)] + w(word2);
-          }
-          else if (pos === 'noun' || pos === 'proper-noun') {
-            var a = article(word.id) + " ";
-            var pre = [
-              "Every other MC is a sucker ",
-              "There's nobody like me 'cause I'm the greatest ",
-              "You hear my freestyle and you drop your ",
-              "My flow and my style both blow away the ",
-              "My posse's got my back and my " + sistasHomies() + " got my ",
-              "Sweeter than molasses, and stronger than " + a,
-              "Try to step to me and I'mma wreck your ",
-              "Wherever I go, people give me some "
-            ];
-            result = pre[Math.floor(Math.random()*pre.length)] + w(I.singularize(word2));
-           }
-           else if (pos === 'verb-transitive') {
-             result = "My rhyme profile makes the " + ladiesFellas() + " " + w(word2);
-           }
-           else if (pos === 'interjection') {
-             result = "*skratch solo* ... (" + word2[0] + "-" + word2[0] + "-" + w(word2) + "!)";
-           }
-           else {
-             result = pos;
-             //coupletDeferred.resolve(result);
-             coupletDeferred.resolve("");
-           }
-         coupletDeferred.resolve(first + "\n<br>" + result + "\n<br>");
-         });
-        })(first);
+  word.getRelatedWords()
+    .then( function() {
+      if (word.get("relatedWords").length > 0) {
+      var first = getLine(word.id,'noun');
+      var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random()*word.get("relatedWords")[0].words.length)];
+      var posPromise = getPartOfSpeech(word2);
+      ( function(first, word2) {
+      
+      posPromise.done(function(pos) {
+        var result = "oops!";
+        result = getLine(word2, pos);
+        if (result === "") {
+          coupletDeferred.resolve(result);
         }
         else {
-          //coupletDeferred.resolve("Sorry. We couldn't find anything that rhymes with " + word.id + "!");
-          coupletDeferred.resolve("");
+          coupletDeferred.resolve(first + "\n<br>" + result + "\n<br>");
         }
-     });
+       });
+      })(first, word2);
+      }
+      else {
+        //coupletDeferred.resolve("Sorry. We couldn't find anything that rhymes with " + word.id + "!");
+        coupletDeferred.resolve("");
+      }
+    });
 });
 return coupletDeferred.promise();
 }
@@ -164,5 +126,51 @@ function w(word) {
   return "<a href='http://www.wordnik.com/words/"+word+"'>"+word+"</a>";
 }
 
+function getLine(word, pos) {
 
+  if (pos === 'adjective') {
+    var pre = [
+      "You can try and battle me, but you're too ",
+      "I make the MCs in the place wish that they were ",
+      "My rhymes blow your mind and you think it's ",
+      "My sweet-ass rhymes make your " + womanMan() + " feel ",
+      "Now I'm gonna tell you why you ain't ",
+    ];
+    return(pre[Math.floor(Math.random()*pre.length)] + w(word));
+  }
+  else if (pos === 'noun' || pos === 'proper-noun') {
+    var a = article(word) + " ";
+    console.log(word, a);
+    var pre = [
+      "I'm the illest MC to ever rock the ",
+      "When I'm on the mic you realize you're " + a,
+      "My rhymes bring the power like a raging ",
+      "If you can't handle this then you're nothing but " + a,
+      "When I come to a battle I'm strapped with " + a,
+      "When you battle me it's like you battle " + a,
+      "Every other MC is a sucker ",
+      "There's nobody like me 'cause I'm the greatest ",
+      "You hear my freestyle and you drop your ",
+      "My flow and my style both blow away the ",
+      "My posse's got my back and my " + sistasHomies() + " got my ",
+      "Sweeter than molasses, and stronger than " + a,
+      "Try to step to me and I'mma wreck your ",
+      "Wherever I go, people give me some "
+    ];
+    return(pre[Math.floor(Math.random()*pre.length)] + w(I.singularize(word)));
+  }
+  else if (pos === 'verb-transitive') {
+    return("My rhyme profile makes the " + ladiesFellas() + " " + w(word));
+  }
+  else if (pos === 'interjection') {
+    return("*skratch solo* ... (" + word[0] + "-" + word[0] + "-" + w(word) + "!)");
+  }
+  else {
+    //result = pos;
+    //coupletDeferred.resolve(result);
+    //coupletDeferred.resolve("");
+    return("");
+  }
+
+}
 
