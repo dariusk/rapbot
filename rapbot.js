@@ -33,10 +33,7 @@ function getCoupletPromise() {
           hasDictionaryDef: true
         }
       });
-      word.getWord()
-        .then(function () {
-        rwDeferred.resolve(word);
-      });
+      rwDeferred.resolve(word);
 
     }
     else {
@@ -47,25 +44,31 @@ function getCoupletPromise() {
   randomWordPromise.done(function (word) {
     //console.log("The model for our random word: ", word);
     // We could also get more info about the random word, in this case, relatedWords that rhyme:
-    word.getRelatedWords()
+    _.when(word.getRelatedWords())
       .then(function () {
       if (word.get("relatedWords").length > 0) {
+//        var wordPos = word.get("definitions")[0].partOfSpeech;
         var first = getLine(word.id, 'noun');
-        var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
-        var posPromise = getPartOfSpeech(word2);
-        (function (first, word2) {
+        if (first === "") {
+          coupletDeferred.resolve(result);
+        }
+        else {
+          var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
+          var posPromise = getPartOfSpeech(word2);
+          (function (first, word2) {
 
-          posPromise.done(function (pos) {
-            var result = "oops!";
-            result = getLine(word2, pos);
-            if (result === "") {
-              coupletDeferred.resolve(result);
-            }
-            else {
-              coupletDeferred.resolve(first + "\n<br>" + result + "\n<br>");
-            }
-          });
-        })(first, word2);
+            posPromise.done(function (pos) {
+              var result = "oops!";
+              result = getLine(word2, pos);
+              if (result === "") {
+                coupletDeferred.resolve(result);
+              }
+              else {
+                coupletDeferred.resolve(first + "\n<br>" + result + "\n<br>");
+              }
+            });
+          })(first, word2);
+        }
       }
       else {
         //coupletDeferred.resolve("Sorry. We couldn't find anything that rhymes with " + word.id + "!");
@@ -95,7 +98,7 @@ app.get('/', function (req, res) {
     //console.log(cypher);
     //console.log('*drops the mic*');
     cypher += "<br>*drops the mic*";
-    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">a {color: rgb(35, 40, 104); text-decoration:none;}</style></head><body style="font-family:sans-serif;width:600px;"><h1>Freestyle 80s Battle Rap Generator</h1><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
+    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">a {color: rgb(35, 40, 104); text-decoration:none;}</style></head><body style="font-family:sans-serif;max-width:800px;font-size:1.5em;"><h1>Freestyle 80s Battle Rap Generator</h1><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
 
   });
 
@@ -149,7 +152,6 @@ function getLine(word, pos) {
   }
   else if (pos === 'noun' || pos === 'proper-noun') {
     var a = article(word) + " ";
-    console.log(word, a);
     var pre = [
       "I'm the illest MC to ever rock the ",
       "When I'm on the mic you realize you're " + a,
