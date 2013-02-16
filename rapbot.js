@@ -47,8 +47,8 @@ function getCoupletPromise() {
     _.when(word.getRelatedWords())
       .then(function () {
       if (word.get("relatedWords").length > 0) {
-        var wordPos = word.get("definitions")[0].partOfSpeech;
-        var first = getLine(word.id, wordPos);
+//        var wordPos = word.get("definitions")[0].partOfSpeech;
+        var first = getLine(word.id, 'noun');
         if (first === "") {
           coupletDeferred.resolve(result);
         }
@@ -64,7 +64,8 @@ function getCoupletPromise() {
                 coupletDeferred.resolve(result);
               }
               else {
-                coupletDeferred.resolve(first + "\n<br>" + result + "\n<br>");
+                var regex = /(<([^>]+)>)/ig;
+                coupletDeferred.resolve(first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #rapbot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script><br>");
               }
             });
           })(first, word2);
