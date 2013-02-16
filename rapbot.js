@@ -5,6 +5,23 @@ var request = require('request');
 var article = require('./lib/indefinite');
 var Wordnik = require('wordnik-bb').init(APIKEY);
 
+// fill the blacklist from a file
+
+var fs = require('fs');
+var blacklist = [];
+try {
+  var data = fs.readFileSync('badwords.txt', 'ascii');
+  data.split('\n').forEach(function (line) {
+    if(line.length>0) {
+      blacklist.push(line);
+    }
+  });
+}
+catch (err) {
+  console.error("There was an error opening the file:");
+  console.log(err);
+}
+
 var express = require('express'),
   app = express();
 app.use(express.logger());
@@ -46,6 +63,9 @@ function getCoupletPromise() {
     // We could also get more info about the random word, in this case, relatedWords that rhyme:
     _.when(word.getRelatedWords(),word.getDefinitions())
       .then(function () {
+      if (isBlacklisted(word.id)) {
+        coupletDeferred.resolve("");
+      }
       if (word.get("relatedWords").length > 0) {
         var wordPos = word.get("definitions")[0].partOfSpeech;
         var first = getLine(word.id, wordPos);
@@ -54,6 +74,11 @@ function getCoupletPromise() {
         }
         else {
           var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
+          // quit this couplet if blacklisted word comes up
+          if (isBlacklisted(word2)) {
+            coupletDeferred.resolve("");
+          }
+
           var posPromise = getPartOfSpeech(word2);
           (function (first, word2) {
 
@@ -177,12 +202,20 @@ function getLine(word, pos) {
     result = "*skratch solo* ... (" + word[0] + "-" + word[0] + "-" + w(word) + "!)";
   }
   else {
-    //result = pos;
-    //coupletDeferred.resolve(result);
-    //coupletDeferred.resolve("");
     result = "";
   }
 
   return result;
 
 }
+
+function isBlacklisted(data) {
+  var result = false;
+  for (var i=0;i<blacklist.length;i++) {
+    if (data.indexOf(blacklist[i]) >= 0) {
+      result = true;
+    }
+  }
+  return result;
+}
+
