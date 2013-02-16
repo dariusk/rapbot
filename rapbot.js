@@ -44,13 +44,13 @@ function getCoupletPromise() {
   randomWordPromise.done(function (word) {
     //console.log("The model for our random word: ", word);
     // We could also get more info about the random word, in this case, relatedWords that rhyme:
-    _.when(word.getRelatedWords())
+    _.when(word.getRelatedWords(),word.getDefinitions())
       .then(function () {
       if (word.get("relatedWords").length > 0) {
-//        var wordPos = word.get("definitions")[0].partOfSpeech;
-        var first = getLine(word.id, 'noun');
+        var wordPos = word.get("definitions")[0].partOfSpeech;
+        var first = getLine(word.id, wordPos);
         if (first === "") {
-          coupletDeferred.resolve(result);
+          coupletDeferred.resolve(first);
         }
         else {
           var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
