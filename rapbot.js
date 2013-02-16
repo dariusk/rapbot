@@ -173,7 +173,9 @@ function getLine(word, pos) {
       "I make the MCs in the place wish that they were ",
       "My rhymes blow your mind and you think it's ",
       "My sweet-ass rhymes make your " + womanMan() + " feel ",
-      "Now I'm gonna tell you why you ain't ", ];
+      "Now I'm gonna tell you why you ain't ",
+      "You'll never beat me 'cause I'm so "
+      ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
   else if (pos === 'noun' || pos === 'proper-noun') {
@@ -192,7 +194,9 @@ function getLine(word, pos) {
       "My posse's got my back and my " + sistasHomies() + " got my ",
       "Sweeter than molasses, and stronger than " + a,
       "Try to step to me and I'mma wreck your ",
-      "Wherever I go, people give me some "];
+      "Wherever I go, people give me some ",
+      "You're nothin' but a scrub, word to your "
+      ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
   else if (pos === 'verb-transitive') {
