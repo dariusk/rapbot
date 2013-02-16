@@ -33,7 +33,7 @@ function getCoupletPromise() {
   var coupletDeferred = _.Deferred();
   var coupletPromise = coupletDeferred.promise();
 
-  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=5000&api_key=" + APIKEY;
+  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=5000&api_key=" + APIKEY;
   var rwDeferred = _.Deferred();
   var randomWordPromise = rwDeferred.promise();
   request({
@@ -174,11 +174,14 @@ function getLine(word, pos) {
       "My rhymes blow your mind and you think it's ",
       "My sweet-ass rhymes make your " + womanMan() + " feel ",
       "Now I'm gonna tell you why you ain't ",
-      "You'll never beat me 'cause I'm so "
+      "You'll never beat me 'cause I'm so ",
+      "If you're gonna battle me, then you gotta be ",
+      "When I rock a mic you know I rock it real ",
+      "If a rapper tries to step I'm gonna get "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
-  else if (pos === 'noun' || pos === 'proper-noun') {
+  else if (pos === 'noun') {
     var a = article(word) + " ";
     var pre = [
       "I'm the illest MC to ever rock the ",
@@ -196,6 +199,15 @@ function getLine(word, pos) {
       "Try to step to me and I'mma wreck your ",
       "Wherever I go, people give me some ",
       "You're nothin' but a scrub, word to your "
+      ];
+    result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
+  }
+  else if (pos === 'proper-noun') {
+    var a = article(word) + " ";
+    var pre = [
+      "I'm playing you and your best friend ",
+      "I know how to charm a " + womanMan() + ", just ask your friend ",
+      "I've battled every MC, every Tom, Dick, and "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
