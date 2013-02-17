@@ -33,7 +33,7 @@ function getCoupletPromise() {
   var coupletDeferred = _.Deferred();
   var coupletPromise = coupletDeferred.promise();
 
-  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=3000&hasDictionaryDef=true&api_key=" + APIKEY;
+  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&api_key=" + APIKEY;
   var rwDeferred = _.Deferred();
   var randomWordPromise = rwDeferred.promise();
   request({
@@ -90,7 +90,7 @@ function getCoupletPromise() {
               }
               else {
                 var regex = /(<([^>]+)>)/ig;
-                coupletDeferred.resolve(first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #rapbot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script><br>");
+                coupletDeferred.resolve("<div class=\"couplet\">" + first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #RapBot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script></div>");
               }
             });
           })(first, word2);
@@ -124,7 +124,7 @@ app.get('/', function (req, res) {
     //console.log(cypher);
     //console.log('*drops the mic*');
     cypher += "<br>*drops the mic*";
-    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">a {color: rgb(35, 40, 104); text-decoration:none;}</style></head><body style="font-family:sans-serif;max-width:800px;font-size:1.5em;"><h1>Freestyle 80s Battle Rap Generator</h1><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
+    res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">body {font-family:sans-serif;max-width:650px;font-size:1.2em;} a {color: rgb(35, 40, 104); text-decoration:none;} .couplet:hover{background:#ddd;} h1, h3{margin: 0;} .twitter-share-button{float:right;}</style></head><body><h1>RapBot</h1><h3>freestyle 80s battle rap generator by <a href=\"http://tinysubversions.com\">Darius Kazemi</a></h3><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
 
   });
 
