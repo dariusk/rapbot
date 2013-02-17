@@ -159,6 +159,10 @@ function sistasHomies() {
   return (Math.random() < 0.5) ? "sistas" : "homies";
 }
 
+function sheHe() {
+  return (Math.random() < 0.5) ? "she" : "he";
+}
+
 function w(word) {
   return "<a href='http://www.wordnik.com/words/" + word + "'>" + word + "</a>";
 }
@@ -177,7 +181,9 @@ function getLine(word, pos) {
       "You'll never beat me 'cause I'm so ",
       "If you're gonna battle me, then you gotta be ",
       "When I rock a mic you know I rock it real ",
-      "If a rapper tries to step I'm gonna get "
+      "If a rapper tries to step I'm gonna get ",
+      "When I'm on the stage the " + ladiesFellas() + " get ",
+      "I'm smooth, you'll never catch me acting "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -198,7 +204,13 @@ function getLine(word, pos) {
       "Sweeter than molasses, and stronger than " + a,
       "Try to step to me and I'mma wreck your ",
       "Wherever I go, people give me some ",
-      "You're nothin' but a scrub, word to your "
+      "You're nothin' but a scrub, word to your ",
+      "I'm a lyricist, I'm a microphone ",
+      "I write my rhymes while I chill in my ",
+      "They called me a new jack, but I'm a new ",
+      "Master of the game, I'm the rap ",
+      "I know what you want, what you want's " + a,
+      "My DJ is the backup and I'm the "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -207,12 +219,28 @@ function getLine(word, pos) {
     var pre = [
       "I'm playing you and your best friend ",
       "I know how to charm a " + womanMan() + ", just ask your friend ",
-      "I've battled every MC, every Tom, Dick, and "
+      "I've battled every MC, every Tom, Dick, and ",
+      "You wish you had a DJ like DJ "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
+  else if (pos === 'adverb') {
+    var a = article(word) + " ";
+    var pre = [
+      "You know I rock the mic ",
+      "I treat all the " + ladiesFellas() + " ",
+      "Every body looks at me so "
+      ];
+    result = pre[Math.floor(Math.random() * pre.length)] + w(word);
+  }
   else if (pos === 'verb-transitive') {
-    result = "My rhyme profile makes the " + ladiesFellas() + " " + w(word);
+    var a = article(word) + " ";
+    var pre = [
+      "My rhyme profile makes the " + ladiesFellas() + " ",
+      "My DJ is the greatest, " + sheHe() + " makes the beat ",
+      "Listen to my rhyme, let your mind "
+      ];
+    result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
   else if (pos === 'interjection') {
     result = "*skratch solo* ... (" + word[0] + "-" + word[0] + "-" + w(word) + "!)";
