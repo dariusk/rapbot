@@ -33,7 +33,7 @@ function getCoupletPromise() {
   var coupletDeferred = _.Deferred();
   var coupletPromise = coupletDeferred.promise();
 
-  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=5000&api_key=" + APIKEY;
+  var url = "http://api.wordnik.com//v4/words.json/randomWord?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=3000&hasDictionaryDef=true&api_key=" + APIKEY;
   var rwDeferred = _.Deferred();
   var randomWordPromise = rwDeferred.promise();
   request({
