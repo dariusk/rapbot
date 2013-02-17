@@ -123,7 +123,7 @@ app.get('/', function (req, res) {
   _.when(stuffToDo).done(function () {
     //console.log(cypher);
     //console.log('*drops the mic*');
-    cypher += "<br>*drops the mic*";
+    cypher += "<br>*drops the mic*<br><br><a href=\"\">Yo, reload for more!</a>";
     res.send('<!doctype html><html><head><title>Freestyle 80s Battle Rap Generator</title><style type="text/css">body {font-family:sans-serif;max-width:650px;font-size:1.2em;} a {color: rgb(35, 40, 104); text-decoration:none;} .couplet:hover{background:#ddd;} h1, h3{margin: 0;} .twitter-share-button{float:right;}</style></head><body><h1>RapBot</h1><h3>freestyle 80s battle rap generator by <a href=\"http://tinysubversions.com\">Darius Kazemi</a></h3><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-1"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
 
   });
@@ -228,8 +228,8 @@ function getLine(word, pos) {
     var a = article(word) + " ";
     var pre = [
       "You know I rock the mic ",
-      "I treat all the " + ladiesFellas() + " ",
-      "Every body looks at me so "
+      "Everybody knows I treat all the " + ladiesFellas() + " ",
+      "Everybody in the club looks at me so "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
