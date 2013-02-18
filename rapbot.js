@@ -166,13 +166,11 @@ function getPartOfSpeech(wordId) {
       includeSuggestions: true
     }
   });
-  var deferred = _.Deferred();
-  word.getDefinitions()
+  return word.getDefinitions()
     .then(function (word) {
       apicount++;
-    deferred.resolve(word.get("definitions")[0].partOfSpeech);
-  });
-  return deferred.promise();
+      return word.get("definitions")[0].partOfSpeech;
+  }).promise();
 }
 
 function ladiesFellas() {
