@@ -4,6 +4,7 @@ var I = require('inflection');
 var request = require('request');
 var article = require('./lib/indefinite');
 var Wordnik = require('wordnik-bb').init(APIKEY);
+var apicount = 0;
 
 // fill the blacklist from a file
 
@@ -49,6 +50,7 @@ function getCoupletPromise() {
     // We could also get more info about the random word, in this case, relatedWords that rhyme:
     _.when(word.getRelatedWords(),word.getDefinitions())
       .then(function () {
+        apicount+=2;
       if (isBlacklisted(word.id)) {
         coupletDeferred.resolve("");
       }
@@ -100,6 +102,7 @@ app.get('/', function (req, res) {
   request({
     url: url
   }, function (error, response, body) {
+    apicount++;
     if (JSON.parse(body).message === "exceeded access limits") {
       console.log("We're over the access limit, nooo!");
       rwDeferred.reject(error);
@@ -135,6 +138,7 @@ app.get('/', function (req, res) {
       //console.log('*drops the mic*');
       cypher += "<br>*drops the mic*<br><br><a href=\"\">Yo, reload for more!</a><br><a href=\"https://github.com/dariusk/rapbot/blob/master/howitworks.md\">how it works</a> | <a href=\"https://github.com/dariusk/rapbot\">source code</a> | <a href=\"http://developer.wordnik.com\">thank u based Wordnik</a>";
       res.send('<!doctype html><html><head><title>RapBot: a Freestyle 80s Battle Rap Generator</title><style type="text/css">body {font-family:sans-serif;max-width:650px;font-size:1.2em;} a {color: rgb(35, 40, 104); text-decoration:none;} .couplet:hover{background:#ddd;} h1, h3, h4{margin: 0;} .twitter-share-button{float:right;}</style></head><body><h1>RapBot</h1><h3>freestyle 80s battle rap generator by <a href=\"http://tinysubversions.com\">Darius Kazemi</a></h3><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-2"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
+      console.log("count: ",apicount);
 
     });
 
@@ -153,6 +157,7 @@ function getPartOfSpeech(wordId) {
   var deferred = _.Deferred();
   word.getDefinitions()
     .then(function (word) {
+      apicount++;
     deferred.resolve(word.get("definitions")[0].partOfSpeech);
   });
   return deferred.promise();
