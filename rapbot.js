@@ -23,7 +23,11 @@ catch (err) {
   console.log(err);
 }
 
-var randomWordBucket = [];
+var randomWords = {
+  noun: [],
+  adj: [],
+  verb: []
+};
 
 var express = require('express'),
   app = express();
@@ -36,9 +40,24 @@ function getCoupletPromise() {
 
   var coupletDeferred = _.Deferred();
   var coupletPromise = coupletDeferred.promise();
+  var randomWordType, randomWordPos;
+  //console.log(randomWords.noun.length);
+  var rnd = Math.random();
+  if (rnd < 0.4) {
+    randomWordType = randomWords.noun;
+    randomWordPos = 'noun';
+  }
+  else if (rnd >= 0.4 && rnd <= 0.8) {
+    randomWordType = randomWords.adj;
+    randomWordPos = 'adjective';
+  }
+  else {
+    randomWordType = randomWords.verb;
+    randomWordPos = 'verb-transitive';
+  }
 
   var word = new Wordnik.Word({
-    word: I.singularize(randomWordBucket[Math.floor(Math.random()*randomWordBucket.length)].word),
+    word: I.singularize(randomWordType[Math.floor(Math.random()*randomWordType.length)].word),
     params: {
       relationshipTypes: 'rhyme',
       limitPerRelationshipType: 100,
@@ -48,14 +67,14 @@ function getCoupletPromise() {
 
     //console.log("The model for our random word: ", word);
     // We could also get more info about the random word, in this case, relatedWords that rhyme:
-    _.when(word.getRelatedWords(),word.getDefinitions())
+    _.when(word.getRelatedWords())
       .then(function () {
-        apicount+=2;
+        apicount+=1;
       if (isBlacklisted(word.id)) {
         coupletDeferred.resolve("");
       }
       if (word.get("relatedWords").length > 0) {
-        var wordPos = word.get("definitions")[0].partOfSpeech;
+        var wordPos = randomWordPos;
         var first = getLine(word.id, wordPos);
         if (first === "") {
           coupletDeferred.resolve(first);
@@ -96,32 +115,11 @@ app.get('/', function (req, res) {
 
   var cypher = "";
   // get a bunch of random words so we don't have to call the API every time
-  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech=noun,adjective,verb-transitive&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
-  var rwDeferred = _.Deferred();
-  var randomWordPromise = rwDeferred.promise();
-  request({
-    url: url
-  }, function (error, response, body) {
-    apicount++;
-    if (JSON.parse(body).message === "exceeded access limits") {
-      console.log("We're over the access limit, nooo!");
-      rwDeferred.reject(error);
-    }
-    else if (!error && response.statusCode === 200) {
-      //console.log(JSON.parse(body).word);
-      //console.log(I.singularize(JSON.parse(body).word));
-      rwDeferred.resolve(JSON.parse(body));
+  var randomWordNounPromise = getRandomWordsPromise('noun');
+  var randomWordAdjPromise = getRandomWordsPromise('adjective');
+  var randomWordVerbPromise = getRandomWordsPromise('verb-transitive');
 
-    }
-    else {
-      rwDeferred.reject(error);
-    }
-  });
-
-  randomWordPromise.done(function(words) {
-    //console.log(words.length);
-    randomWordBucket = words;
-
+  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise).done(function() {
     var stuffToDo = [];
     for (var i = 0; i < 12; i++) {
       var cp = getCoupletPromise();
@@ -279,3 +277,42 @@ function isBlacklisted(data) {
   return result;
 }
 
+function getRandomWordsPromise(pos) {
+  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech="+pos+"&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
+  var rwDeferred = _.Deferred();
+  var randomWordNounPromise = rwDeferred.promise();
+  request({
+    url: url
+  }, function (error, response, body) {
+    apicount++;
+    if (JSON.parse(body).message === "exceeded access limits") {
+      console.log("We're over the access limit, nooo!");
+      rwDeferred.reject(error);
+    }
+    else if (!error && response.statusCode === 200) {
+      //console.log(JSON.parse(body).word);
+      //console.log(I.singularize(JSON.parse(body).word));
+      rwDeferred.resolve(JSON.parse(body));
+    }
+    else {
+      rwDeferred.reject(error);
+    }
+  });
+
+  (function(pos) {
+    randomWordNounPromise.done(function(words) {
+      console.log("!!",words.length);
+      if (pos === "noun") {
+        randomWords.noun = words;
+      }
+      if (pos === "adjective") {
+        randomWords.adj = words;
+      }
+      if (pos === "verb-transitive") {
+        randomWords.verb = words;
+      }
+    });
+  })(pos);
+
+  return randomWordNounPromise;
+}
