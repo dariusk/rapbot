@@ -27,7 +27,9 @@ var randomWords = {
   noun: [],
   adj: [],
   verb: [],
-  pnoun: []
+  pnoun: [],
+  adv: [],
+  inter: []
 };
 
 var express = require('express'),
@@ -47,17 +49,25 @@ function getCoupletPromise() {
     randomWordType = randomWords.noun;
     randomWordPos = 'noun';
   }
-  else if (rnd >= 0.4 && rnd < 0.65) {
+  else if (rnd >= 0.4 && rnd < 0.6) {
     randomWordType = randomWords.adj;
     randomWordPos = 'adjective';
   }
-  else if (rnd >= 0.65 && rnd <= 0.85) {
+  else if (rnd >= 0.6 && rnd < 0.75) {
     randomWordType = randomWords.verb;
     randomWordPos = 'verb-transitive';
   }
-  else {
+  else if (rnd >= 0.75 && rnd < 0.85 ) {
     randomWordType = randomWords.pnoun;
     randomWordPos = 'proper-noun';
+  }
+  else if (rnd >= 0.85 && rnd < 0.95) {
+    randomWordType = randomWords.adv;
+    randomWordPos = 'adverb';
+  }
+  else {
+    randomWordType = randomWords.inter;
+    randomWordPos = 'interjection';
   }
   var word = new Wordnik.Word({
     word: I.singularize(randomWordType[Math.floor(Math.random()*randomWordType.length)].word),
@@ -122,8 +132,10 @@ app.get('/', function (req, res) {
   var randomWordAdjPromise = getRandomWordsPromise('adjective');
   var randomWordVerbPromise = getRandomWordsPromise('verb-transitive');
   var randomWordPNounPromise = getRandomWordsPromise('proper-noun');
+  var randomWordIntPromise = getRandomWordsPromise('interjection',100);
+  var randomWordAdvPromise = getRandomWordsPromise('adverb');
 
-  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise,randomWordPNounPromise).done(function() {
+  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise,randomWordPNounPromise, randomWordIntPromise, randomWordAdvPromise).done(function() {
     var stuffToDo = [];
     for (var i = 0; i < 12; i++) {
       var cp = getCoupletPromise();
@@ -243,9 +255,10 @@ function getLine(word, pos) {
   else if (pos === 'adverb') {
     var a = article(word) + " ";
     var pre = [
-      "You know I rock the mic ",
+      "You know I rock the mic so ",
       "Everybody knows I treat all the " + ladiesFellas() + " ",
-      "Everybody in the club looks at me so "
+      "Everybody in the club looks at me so ",
+      "You're just jealous 'cause I rap "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -254,7 +267,8 @@ function getLine(word, pos) {
     var pre = [
       "My rhyme profile makes the " + ladiesFellas() + " ",
       "My DJ is the greatest, " + sheHe() + " makes the beat ",
-      "Listen to my rhyme, let your mind "
+      "Listen to my rhyme, let your mind ",
+      "The power of the beat makes you look at me and "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -279,8 +293,9 @@ function isBlacklisted(data) {
   return result;
 }
 
-function getRandomWordsPromise(pos) {
-  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech="+pos+"&excludePartOfSpeech=proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
+function getRandomWordsPromise(pos,minCount) {
+  var minCount = minCount || 4000;
+  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech="+pos+"&excludePartOfSpeech=proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount="+minCount+"&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
   var rwDeferred = _.Deferred();
   var randomWordNounPromise = rwDeferred.promise();
   request({
@@ -314,6 +329,12 @@ function getRandomWordsPromise(pos) {
       }
       else if (pos === "proper-noun") {
         randomWords.pnoun = words;
+      }
+      else if (pos === "interjection") {
+        randomWords.inter = words;
+      }
+      else if (pos === "adverb") {
+        randomWords.adv = words;
       }
 
     });
