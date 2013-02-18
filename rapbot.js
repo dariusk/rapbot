@@ -26,7 +26,8 @@ catch (err) {
 var randomWords = {
   noun: [],
   adj: [],
-  verb: []
+  verb: [],
+  pnoun: []
 };
 
 var express = require('express'),
@@ -47,13 +48,17 @@ function getCoupletPromise() {
     randomWordType = randomWords.noun;
     randomWordPos = 'noun';
   }
-  else if (rnd >= 0.4 && rnd <= 0.8) {
+  else if (rnd >= 0.4 && rnd < 0.65) {
     randomWordType = randomWords.adj;
     randomWordPos = 'adjective';
   }
-  else {
+  else if (rnd >= 0.65 && rnd <= 0.85) {
     randomWordType = randomWords.verb;
     randomWordPos = 'verb-transitive';
+  }
+  else {
+    randomWordType = randomWords.pnoun;
+    randomWordPos = 'proper-noun';
   }
 
   var word = new Wordnik.Word({
@@ -118,8 +123,9 @@ app.get('/', function (req, res) {
   var randomWordNounPromise = getRandomWordsPromise('noun');
   var randomWordAdjPromise = getRandomWordsPromise('adjective');
   var randomWordVerbPromise = getRandomWordsPromise('verb-transitive');
+  var randomWordPNounPromise = getRandomWordsPromise('proper-noun');
 
-  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise).done(function() {
+  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise.randomWordPNounPromise).done(function() {
     var stuffToDo = [];
     for (var i = 0; i < 12; i++) {
       var cp = getCoupletPromise();
@@ -278,7 +284,7 @@ function isBlacklisted(data) {
 }
 
 function getRandomWordsPromise(pos) {
-  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech="+pos+"&excludePartOfSpeech=proper-noun,proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
+  var url = "http://api.wordnik.com//v4/words.json/randomWords?includePartOfSpeech="+pos+"&excludePartOfSpeech=proper-noun-plural,proper-noun-posessive,suffix,family-name,idiom,affix&minCorpusCount=4000&hasDictionaryDef=true&limit=1000&api_key=" + APIKEY;
   var rwDeferred = _.Deferred();
   var randomWordNounPromise = rwDeferred.promise();
   request({
@@ -305,12 +311,16 @@ function getRandomWordsPromise(pos) {
       if (pos === "noun") {
         randomWords.noun = words;
       }
-      if (pos === "adjective") {
+      else if (pos === "adjective") {
         randomWords.adj = words;
       }
-      if (pos === "verb-transitive") {
+      else if (pos === "verb-transitive") {
         randomWords.verb = words;
       }
+      else if (pos === "proper-noun") {
+        randomWords.pnoun = words;
+      }
+
     });
   })(pos);
 
