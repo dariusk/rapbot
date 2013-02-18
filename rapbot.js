@@ -110,7 +110,7 @@ function getCoupletPromise() {
               }
               else {
                 var regex = /(<([^>]+)>)/ig;
-                coupletDeferred.resolve("<div class=\"couplet\">" + first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #RapBot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script></div>");
+                coupletDeferred.resolve("<div class=\"couplet\">" + first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #RapBot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\" data-count=\"none\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script></div>");
               }
             });
           })(first, word2);
