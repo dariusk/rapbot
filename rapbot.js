@@ -189,7 +189,7 @@ function sheHe() {
   return (Math.random() < 0.5) ? "she" : "he";
 }
 
-funtion youMe() {
+function youMe() {
   return (Math.random() < 0.5) ? "you" : "me"
 }
 
@@ -215,7 +215,9 @@ function getLine(word, pos) {
       "When I'm on the stage the " + ladiesFellas() + " get ",
       "I'm smooth, you'll never catch me acting ",
       "Try and step to me I have to laugh, it's so ",
-      "My style tried and tested, guaranteed most "
+      "My style tried and tested, guaranteed most ",
+      "Way I rock the mic you know I'm born ",
+      "See you try to rhyme, it come out just so "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -242,8 +244,7 @@ function getLine(word, pos) {
       "They called me a new jack, but I'm a new ",
       "Master of the game, I'm the rap ",
       "I know what you want, what you want's " + a,
-      "My DJ is the backup and I'm the ",
-      "Bring the heat to make it blaze and you just drop " + a,
+      "My DJ is the backup and I'm the "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -254,7 +255,8 @@ function getLine(word, pos) {
       "I know how to charm a " + womanMan() + ", just ask your friend ",
       "I've battled every MC, every Tom, Dick, and ",
       "You wish you had a DJ like DJ ",
-      "Claim you're MC so-and-so but I just call you "
+      "Claim you're MC so-and-so but I just call you ",
+      "Knew a cat like you back home, went by the name of "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -265,8 +267,8 @@ function getLine(word, pos) {
       "Everybody knows I treat all the " + ladiesFellas() + " ",
       "Everybody in the club looks at me so ",
       "You're just jealous 'cause I rap ",
-      "Catch " + youMe() + " on the streets walking by so ",
-      "My DJ drop the beat I pick it up most ",
+      "Catch " + youMe() + " on the streets, walking by so ",
+      "My DJ drop the beat I pick it up most "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -278,8 +280,8 @@ function getLine(word, pos) {
       "Listen to my rhyme, let your mind ",
       "The power of the beat makes you look at me and ",
       "Flow so radical, make the " + ladiesFellas() + " all ",
-      "The verbal animator make crowds pop, lock and ",
-      "You spitting rhymes is like a pig trying to "
+      "Verbal animator make crowds pop, lock and ",
+      "You spit rhymes like a pig try to "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
