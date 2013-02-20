@@ -74,7 +74,8 @@ function getCoupletPromise() {
     params: {
       relationshipTypes: 'rhyme',
       limitPerRelationshipType: 100,
-      hasDictionaryDef: true
+      hasDictionaryDef: true,
+      useCanonical: false
     }
   });
 
