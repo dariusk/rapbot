@@ -1,4 +1,6 @@
-Here's how it works. This runs in node.js (server-side JavaScript) and uses the [Wordnik API](http://developer.wordnik.com) to pick out random words, parts of speech, and associated rhymes. The basic algorithm is:
+For an in-depth look at how RapBot works, [check out this blog post](http://weblog.bocoup.com/making-a-rapbot/).
+
+TLDR: This runs in node.js (server-side JavaScript) and uses the [Wordnik API](http://developer.wordnik.com) to pick out random words, parts of speech, and associated rhymes. The basic algorithm is:
 
 * Get a random word and its part of speech. Get a 'line' for that word based on the part of speech. For example if it's a noun, it'll pick from a bunch of noun lines, like "I'm the illest MC to ever rock the [noun]"
 * Once I have that first word, get a list of words that rhyme with it. (Wordnik is sort of inconsistent on this.)
