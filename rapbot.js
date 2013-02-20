@@ -190,6 +190,10 @@ function sheHe() {
   return (Math.random() < 0.5) ? "she" : "he";
 }
 
+function youMe() {
+  return (Math.random() < 0.5) ? "you" : "me"
+}
+
 function w(word) {
   return "<a href='http://www.wordnik.com/words/" + word + "'>" + word + "</a>";
 }
@@ -210,7 +214,11 @@ function getLine(word, pos) {
       "When I rock a mic you know I rock it real ",
       "If a rapper tries to step I'm gonna get ",
       "When I'm on the stage the " + ladiesFellas() + " get ",
-      "I'm smooth, you'll never catch me acting "
+      "I'm smooth, you'll never catch me acting ",
+      "Try and step to me I have to laugh, it's so ",
+      "My style tried and tested, guaranteed most ",
+      "Way I rock the mic you know I'm born ",
+      "See you try to rhyme, it come out just so "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -247,7 +255,9 @@ function getLine(word, pos) {
       "I'm playing you and your best friend ",
       "I know how to charm a " + womanMan() + ", just ask your friend ",
       "I've battled every MC, every Tom, Dick, and ",
-      "You wish you had a DJ like DJ "
+      "You wish you had a DJ like DJ ",
+      "Claim you're MC so-and-so but I just call you ",
+      "Knew a cat like you back home, went by the name of "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -257,7 +267,9 @@ function getLine(word, pos) {
       "You know I rock the mic so ",
       "Everybody knows I treat all the " + ladiesFellas() + " ",
       "Everybody in the club looks at me so ",
-      "You're just jealous 'cause I rap "
+      "You're just jealous 'cause I rap ",
+      "Catch " + youMe() + " on the streets, walking by so ",
+      "My DJ drop the beat I pick it up most "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
@@ -267,7 +279,10 @@ function getLine(word, pos) {
       "My rhyme profile makes the " + ladiesFellas() + " ",
       "My DJ is the greatest, " + sheHe() + " makes the beat ",
       "Listen to my rhyme, let your mind ",
-      "The power of the beat makes you look at me and "
+      "The power of the beat makes you look at me and ",
+      "Flow so radical, make the " + ladiesFellas() + " all ",
+      "Verbal animator make crowds pop, lock and ",
+      "You spit rhymes like a pig try to "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
   }
