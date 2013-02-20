@@ -257,7 +257,7 @@ function getLine(word, pos) {
       "I've battled every MC, every Tom, Dick, and ",
       "You wish you had a DJ like DJ ",
       "Claim you're MC so-and-so but I just call you ",
-      "Knew a cat like you back home, went by the name of "
+      "Knew a cat like you back home, by the name of "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -281,7 +281,7 @@ function getLine(word, pos) {
       "Listen to my rhyme, let your mind ",
       "The power of the beat makes you look at me and ",
       "Flow so radical, make the " + ladiesFellas() + " all ",
-      "Verbal animator make crowds pop, lock and ",
+      "I'm the rap king, make you pop, lock and ",
       "You spit rhymes like a pig try to "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(word);
