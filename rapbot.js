@@ -45,6 +45,7 @@ function getCoupletPromise() {
   var coupletPromise = coupletDeferred.promise();
   var randomWordType, randomWordPos;
   var rnd = Math.random();
+
   if (rnd < 0.4) {
     randomWordType = randomWords.noun;
     randomWordPos = 'noun';
@@ -69,6 +70,7 @@ function getCoupletPromise() {
     randomWordType = randomWords.inter;
     randomWordPos = 'interjection';
   }
+
   var word = new Wordnik.Word({
     word: I.singularize(randomWordType[Math.floor(Math.random()*randomWordType.length)].word),
     params: {
@@ -79,49 +81,48 @@ function getCoupletPromise() {
     }
   });
 
-    //console.log("The model for our random word: ", word);
-    // We could also get more info about the random word, in this case, relatedWords that rhyme:
-    _.when(word.getRelatedWords())
-      .then(function () {
-        apicount+=1;
-      if (isBlacklisted(word.id)) {
-        coupletDeferred.resolve("");
-      }
-      if (word.get("relatedWords").length > 0) {
-        var wordPos = randomWordPos;
-        var first = getLine(word.id, wordPos);
-        if (first === "") {
-          coupletDeferred.resolve(first);
-        }
-        else {
-          var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
-          // quit this couplet if blacklisted word comes up
-          if (isBlacklisted(word2)) {
-            coupletDeferred.resolve("");
-          }
-
-          var posPromise = getPartOfSpeech(word2);
-          (function (first, word2) {
-
-            posPromise.done(function (pos) {
-              var result = "oops!";
-              result = getLine(word2, pos);
-              if (result === "") {
-                coupletDeferred.resolve(result);
-              }
-              else {
-                var regex = /(<([^>]+)>)/ig;
-                coupletDeferred.resolve("<div class=\"couplet\">" + first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #RapBot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\" data-count=\"none\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script></div>");
-              }
-            });
-          })(first, word2);
-        }
+  // We could also get more info about the random word, in this case, relatedWords that rhyme:
+  _.when(word.getRelatedWords())
+    .then(function () {
+      apicount+=1;
+    if (isBlacklisted(word.id)) {
+      coupletDeferred.resolve("");
+    }
+    if (word.get("relatedWords").length > 0) {
+      var wordPos = randomWordPos;
+      var first = getLine(word.id, wordPos);
+      if (first === "") {
+        coupletDeferred.resolve(first);
       }
       else {
-        //coupletDeferred.resolve("Sorry. We couldn't find anything that rhymes with " + word.id + "!");
-        coupletDeferred.resolve("");
+        var word2 = word.get("relatedWords")[0].words[Math.floor(Math.random() * word.get("relatedWords")[0].words.length)];
+        // quit this couplet if blacklisted word comes up
+        if (isBlacklisted(word2)) {
+          coupletDeferred.resolve("");
+        }
+
+        var posPromise = getPartOfSpeech(word2);
+        (function (first, word2) {
+
+          posPromise.done(function (pos) {
+            var result = "oops!";
+            result = getLine(word2, pos);
+            if (result === "") {
+              coupletDeferred.resolve(result);
+            }
+            else {
+              var regex = /(<([^>]+)>)/ig;
+              coupletDeferred.resolve("<div class=\"couplet\">" + first + "\n<br>" + result + "\n<a href=\"https://twitter.com/share?text="+first.replace(regex,"")+" / "+result.replace(regex,"")+" #RapBot\" class=\"twitter-share-button\" data-lang=\"en\" data-url=\"http://rapbot.jit.su\" data-count=\"none\">Tweet!</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=\"https://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script></div>");
+            }
+          });
+        })(first, word2);
       }
-    });
+    }
+    else {
+      //coupletDeferred.resolve("Sorry. We couldn't find anything that rhymes with " + word.id + "!");
+      coupletDeferred.resolve("");
+    }
+  });
   return coupletDeferred.promise();
 }
 
@@ -136,7 +137,14 @@ app.get('/', function (req, res) {
   var randomWordIntPromise = getRandomWordsPromise('interjection',100);
   var randomWordAdvPromise = getRandomWordsPromise('adverb');
 
-  _.when(randomWordNounPromise,randomWordAdjPromise,randomWordVerbPromise,randomWordPNounPromise, randomWordIntPromise, randomWordAdvPromise).done(function() {
+  _.when(
+      randomWordNounPromise,
+      randomWordAdjPromise,
+      randomWordVerbPromise,
+      randomWordPNounPromise, 
+      randomWordIntPromise, 
+      randomWordAdvPromise
+    ).done(function() {
     var stuffToDo = [];
     for (var i = 0; i < 12; i++) {
       var cp = getCoupletPromise();
@@ -245,7 +253,8 @@ function getLine(word, pos) {
       "They called me a new jack, but I'm a new ",
       "Master of the game, I'm the rap ",
       "I know what you want, what you want's " + a,
-      "My DJ is the backup and I'm the "
+      "My DJ is the backup and I'm the ",
+      "When I'm on the mic I'm guaranteed to bring the "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
@@ -257,7 +266,8 @@ function getLine(word, pos) {
       "I've battled every MC, every Tom, Dick, and ",
       "You wish you had a DJ like DJ ",
       "Claim you're MC so-and-so but I just call you ",
-      "Knew a cat like you back home, by the name of "
+      "Knew a cat like you, by the name of ",
+      "I got real freaky with a " + womanMan() + " named "
       ];
     result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
   }
