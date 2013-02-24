@@ -230,7 +230,7 @@ function getLine(word, pos) {
 
   if (pos in lineTemplates) {
     pre = lineTemplates[pos];
-    result = pre[Math.floor(Math.random() * pre.length)](lineHelpers) + w(word);
+    result = pre[Math.floor(Math.random() * pre.length)](lineHelpers) + " " + w(word);
   }
   else if (pos === 'interjection') {
     result = "*skratch solo* ... (" + word[0] + "-" + word[0] + "-" + w(word) + "!)";
