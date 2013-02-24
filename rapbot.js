@@ -82,7 +82,7 @@ function getCoupletPromise() {
   });
 
   // We could also get more info about the random word, in this case, relatedWords that rhyme:
-  _.when(word.getRelatedWords())
+  word.getRelatedWords()
     .then(function () {
       apicount+=1;
     if (isBlacklisted(word.id)) {
