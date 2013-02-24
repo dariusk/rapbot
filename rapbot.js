@@ -1,10 +1,12 @@
 var APIKEY = require('./config.js').key;
-var _ = require('underscore.deferred');
+var _ = require('lodash');
 var I = require('inflection');
 var request = require('request');
 var article = require('./lib/indefinite');
 var Wordnik = require('wordnik-bb').init(APIKEY);
 var apicount = 0;
+
+_.mixin(require('underscore.deferred'));
 
 // fill the blacklist from a file
 
@@ -22,6 +24,18 @@ catch (err) {
   console.error("There was an error opening the file:");
   console.log(err);
 }
+
+var lineTemplatesDir = 'line-templates';
+var lineTemplates = {};
+fs.readdirSync(lineTemplatesDir).filter(function(fileName) {
+	return /\.json$/i.test(fileName);
+}).forEach(function(fileName) {
+	var templateStrings = require('./' +lineTemplatesDir+ '/' + fileName);
+	var templates= templateStrings.map(function(templateString) {
+		return _.template(templateString);
+	});
+	lineTemplates[fileName.slice(0, -5)] = templates;
+});
 
 var randomWords = {
   noun: [],
@@ -82,7 +96,7 @@ function getCoupletPromise() {
   });
 
   // We could also get more info about the random word, in this case, relatedWords that rhyme:
-  _.when(word.getRelatedWords())
+  word.getRelatedWords()
     .then(function () {
       apicount+=1;
     if (isBlacklisted(word.id)) {
@@ -182,26 +196,23 @@ function getPartOfSpeech(wordId) {
   }).promise();
 }
 
-function ladiesFellas() {
-  return (Math.random() < 0.5) ? "ladies" : "fellas";
-}
-
-function womanMan() {
-  return (Math.random() < 0.5) ? "woman" : "man";
-}
-
-function sistasHomies() {
-  return (Math.random() < 0.5) ? "sistas" : "homies";
-}
-
-function sheHe() {
-  return (Math.random() < 0.5) ? "she" : "he";
-}
-
-function youMe() {
-  return (Math.random() < 0.5) ? "you" : "me"
-}
-
+var lineHelpers = {
+  ladiesFellas: function() {
+    return (Math.random() < 0.5) ? "ladies" : "fellas";
+  },
+  womanMan: function() {
+    return (Math.random() < 0.5) ? "woman" : "man";
+  },
+  sistasHomies: function() {
+    return (Math.random() < 0.5) ? "sistas" : "homies";
+  },
+  sheHe: function() {
+    return (Math.random() < 0.5) ? "she" : "he";
+  },
+  youMe: function() {
+    return (Math.random() < 0.5) ? "you" : "me"
+  }
+};
 function w(word) {
   return "<a href='http://www.wordnik.com/words/" + word + "'>" + word + "</a>";
 }
@@ -209,92 +220,17 @@ function w(word) {
 function getLine(word, pos) {
 
   var result = "Oops, we didn't account for something.";
+  var pre;
+  // The article helper must be generated in the context of the current word
+  lineHelpers.a = function() { return article(word); };
 
-  if (pos === 'adjective') {
-    var pre = [
-      "You can try and battle me, but you're too ",
-      "I make the MCs in the place wish that they were ",
-      "My rhymes blow your mind and you think it's ",
-      "My sweet-ass rhymes make your " + womanMan() + " feel ",
-      "Now I'm gonna tell you why you ain't ",
-      "You'll never beat me 'cause I'm so ",
-      "If you're gonna battle me, then you gotta be ",
-      "When I rock a mic you know I rock it real ",
-      "If a rapper tries to step I'm gonna get ",
-      "When I'm on the stage the " + ladiesFellas() + " get ",
-      "I'm smooth, you'll never catch me acting ",
-      "Try and step to me I have to laugh, it's so ",
-      "My style tried and tested, guaranteed most ",
-      "Way I rock the mic you know I'm born ",
-      "See you try to rhyme, it come out just so "
-      ];
-    result = pre[Math.floor(Math.random() * pre.length)] + w(word);
+  if (/noun/i.test(pos)) {
+    word = I.singularize(word);
   }
-  else if (pos === 'noun') {
-    var a = article(word) + " ";
-    var pre = [
-      "I'm the illest MC to ever rock the ",
-      "When I'm on the mic you realize you're " + a,
-      "My rhymes bring the power like a raging ",
-      "If you can't handle this then you're nothing but " + a,
-      "When I come to a battle I'm strapped with " + a,
-      "When you battle me it's like you battle " + a,
-      "Every other MC is a sucker ",
-      "There's nobody like me 'cause I'm the greatest ",
-      "You hear my freestyle and you drop your ",
-      "My flow and my style both blow away the ",
-      "My posse's got my back and my " + sistasHomies() + " got my ",
-      "Sweeter than molasses, and stronger than " + a,
-      "Try to step to me and I'mma wreck your ",
-      "Wherever I go, people give me some ",
-      "You're nothin' but a scrub, word to your ",
-      "I'm a lyricist, I'm a microphone ",
-      "I write my rhymes while I chill in my ",
-      "They called me a new jack, but I'm a new ",
-      "Master of the game, I'm the rap ",
-      "I know what you want, what you want's " + a,
-      "My DJ is the backup and I'm the ",
-      "When I'm on the mic I'm guaranteed to bring the "
-      ];
-    result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
-  }
-  else if (pos === 'proper-noun') {
-    var a = article(word) + " ";
-    var pre = [
-      "I'm playing you and your best friend ",
-      "I know how to charm a " + womanMan() + ", just ask your friend ",
-      "I've battled every MC, every Tom, Dick, and ",
-      "You wish you had a DJ like DJ ",
-      "Claim you're MC so-and-so but I just call you ",
-      "Knew a cat like you, by the name of ",
-      "I got real freaky with a " + womanMan() + " named "
-      ];
-    result = pre[Math.floor(Math.random() * pre.length)] + w(I.singularize(word));
-  }
-  else if (pos === 'adverb') {
-    var a = article(word) + " ";
-    var pre = [
-      "You know I rock the mic so ",
-      "Everybody knows I treat all the " + ladiesFellas() + " ",
-      "Everybody in the club looks at me so ",
-      "You're just jealous 'cause I rap ",
-      "Catch " + youMe() + " on the streets, walking by so ",
-      "My DJ drop the beat I pick it up most "
-      ];
-    result = pre[Math.floor(Math.random() * pre.length)] + w(word);
-  }
-  else if (pos === 'verb-transitive') {
-    var a = article(word) + " ";
-    var pre = [
-      "My rhyme profile makes the " + ladiesFellas() + " ",
-      "My DJ is the greatest, " + sheHe() + " makes the beat ",
-      "Listen to my rhyme, let your mind ",
-      "The power of the beat makes you look at me and ",
-      "Flow so radical, make the " + ladiesFellas() + " all ",
-      "I'm the rap king, make you pop, lock and ",
-      "You spit rhymes like a pig try to "
-      ];
-    result = pre[Math.floor(Math.random() * pre.length)] + w(word);
+
+  if (pos in lineTemplates) {
+    pre = lineTemplates[pos];
+    result = pre[Math.floor(Math.random() * pre.length)](lineHelpers) + " " + w(word);
   }
   else if (pos === 'interjection') {
     result = "*skratch solo* ... (" + word[0] + "-" + word[0] + "-" + w(word) + "!)";
