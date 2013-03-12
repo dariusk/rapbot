@@ -46,6 +46,7 @@ var randomWords = {
   inter: []
 };
 
+
 var express = require('express'),
   app = express();
 app.use(express.logger());
@@ -139,8 +140,24 @@ function getCoupletPromise() {
   });
   return coupletDeferred.promise();
 }
+app.use('/js', express.static(__dirname + "/js"));
 
 app.get('/', function (req, res) {
+  var beats = '';
+  var license = '';
+  var beatUrl = '';
+  var beatName = '';
+  var beatAuthor = '';
+
+  request('http://ccmixter.org/api/query?tags=hip_hop+instrumental+bpm_100_105&f=json', function(err, res, body) {
+    var music = JSON.parse(body);
+    var index = Math.floor(Math.random() * music.length);
+    beats = music[index].files[0].download_url;
+    license = music[index].license_name;
+    beatUrl = music[index].file_page_url;
+    beatName = music[index].upload_name;
+    beatAuthor = music[index].user_name;
+  });
 
   var cypher = "";
   // get a bunch of random words so we don't have to call the API every time
@@ -171,9 +188,9 @@ app.get('/', function (req, res) {
     }
 
     _.when(stuffToDo).done(function () {
-      cypher += "<br>*drops the mic*<br><br><a href=\"\">Yo, reload for more!</a><br><a href=\"https://github.com/dariusk/rapbot/blob/master/howitworks.md\">how it works</a> | <a href=\"https://github.com/dariusk/rapbot\">source code</a> | <a href=\"http://developer.wordnik.com\">thank u based Wordnik</a>";
-      res.send('<!doctype html><html><head><title>RapBot: a Freestyle 80s Battle Rap Generator</title><style type="text/css">body {font-family:sans-serif;max-width:650px;font-size:1.2em;} a {color: rgb(35, 40, 104); text-decoration:none;} .couplet:hover{background:#ddd;} h1, h3, h4{margin: 0;} .twitter-share-button{float:right;}</style></head><body><h1>RapBot</h1><h3>freestyle 80s battle rap generator by <a href=\"http://tinysubversions.com\">Darius Kazemi</a></h3><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-2"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script></body></html>');
-      console.log("count: ",apicount);
+      cypher += "<br>*drops the mic*<br><br><a href=\"\">Yo, reload for more!</a> | <button id='rap' onclick='rap()'>MAKE IT RAP</button> | <span id='info' style='display:none'>Track: <a href='"+ beatUrl +"'>" + beatName  + " by " + beatAuthor + "</a>, used under a " + license + " license.</span><br><a href=\"https://github.com/dariusk/rapbot/blob/master/howitworks.md\">how it works</a> | <a href=\"https://github.com/dariusk/rapbot\">source code</a> | <a href=\"http://developer.wordnik.com\">thank u based Wordnik</a>";
+      res.send('<!doctype html><html><head><title>RapBot: a Freestyle 80s Battle Rap Generator</title><style type="text/css">body {font-family:sans-serif;max-width:650px;font-size:1.2em;} a {color: rgb(35, 40, 104); text-decoration:none;} .couplet:hover{background:#ddd;} h1, h3, h4{margin: 0;} .twitter-share-button{float:right;}</style><script src="js/speakClient.js"></script></head><body><audio id="track" src="' + beats  + '"></audio><div id="audio"></div><h1>RapBot</h1><h3>freestyle 80s battle rap generator by <a href=\"http://tinysubversions.com\">Darius Kazemi</a></h3><p>' + cypher + '</p><script type="text/javascript"> var _gaq = _gaq || []; _gaq.push(["_setAccount", "UA-37844294-2"]); _gaq.push(["_trackPageview"]); (function() { var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true; ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s); })(); </script><script>document.getElementById("track").volume = 0.2;var couplets = document.getElementsByClassName("couplet");var speakText = "";for (var i=0;i<couplets.length;i++) {speakText += couplets[i].innerText.replace(/\\n/,". ").replace(/$/,". ").replace(/Tweet!/g,"").replace("MC","emcee").replace("DJ","deejay");} function rap() {speak.play(speakText); document.getElementById("track").play(); document.getElementById("info").style.cssText = "display: inline;";} </script></body></html>');
+    console.log("count: ",apicount);
 
     });
 
